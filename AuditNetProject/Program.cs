@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //builder.Services.AddControllersWithViews();
-builder.Services.AddControllersWithViews(o =>
+builder.Services.AddControllers(o =>
 {
 	o.Filters.Add(new AuditApiAttribute());
 	o.AddAuditFilter(config => config
