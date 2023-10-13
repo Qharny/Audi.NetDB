@@ -1,11 +1,27 @@
 ﻿using Audit.Core;
+using Audit.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //builder.Services.AddControllers();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+//builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(o =>
+{
+	o.Filters.Add(new AuditApiAttribute());
+	o.AddAuditFilter(config => config
+		.LogAllActions()
+		//.LogActionIf(d => d.ControllerName == "Orders" && d.ActionName != "GetOrder")
+		.WithEventType("{verb}.{controller}.{action}")
+		//.IncludeHeaders(ctx => !ctx.ModelState.IsValid)
+		//.IncludeHeaders()
+		//.IncludeResponseHeaders()
+		.IncludeRequestBody()
+		.IncludeResponseBody()
+		.IncludeModelState());
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -27,6 +43,8 @@ if (app.Environment.IsDevelopment())
 }
 
 var configuration = builder.Configuration;
+
+
 
 Audit.Core.Configuration.Setup()
     .UseSqlServer(config => config
