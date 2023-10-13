@@ -11,5 +11,24 @@ namespace AuditNetProject.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-    }
+		[HttpGet("weatherforecast")]
+		public ActionResult<IEnumerable<WeatherForecast>> GetWeatherForecast()
+		{
+			var rng = new Random();
+			var forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+			{
+				Date = DateTime.Now.AddDays(index),
+				TemperatureC = rng.Next(-20, 55),
+				Summary = Summaries[rng.Next(Summaries.Length)]
+			})
+			.ToArray();
+
+			return Ok(forecasts);
+		}
+
+		private static readonly string[] Summaries = new[]
+	{
+		"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+	};
+	}
 }
